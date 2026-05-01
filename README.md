@@ -1,15 +1,28 @@
-# FAI Face-Keep Editor
+# FAI Creative API Console
 
-fal.ai を使って、顔の印象を維持したまま背景や服装を編集するWebAppです。
+fal.ai と Promptchan API を検証する生成AI WebAppです。
 
-## 機能
+## メニュー
+
+- `/` メニュー画面
+- `/fal-editor` fal.ai 顔維持エディター
+- `/promptchan` Promptchan API Lab
+
+## fal.ai 顔維持エディター
 
 - 画像アップロード
 - 背景変更
 - 服装変更
 - 背景と服装の同時変更
 - Before / After 表示
-- fal.ai 側へ顔維持プロンプトを自動付与
+- API側で顔維持プロンプトを自動付与
+
+## Promptchan API Lab
+
+- Promptchan APIを別メニューで検証
+- 18歳以上確認チェック付き
+- API URLは環境変数で差し替え
+- APIレスポンスのraw JSONを確認可能
 
 ## セットアップ
 
@@ -18,23 +31,33 @@ npm install
 npm run dev
 ```
 
-`.env.local` を作成して、fal.ai のAPIキーを設定してください。
+`.env.local` を作成してください。
 
 ```env
 FAL_KEY=your_fal_api_key
-```
-
-必要に応じて編集モデルを差し替えられます。
-
-```env
 FAL_EDIT_MODEL=fal-ai/nano-banana/edit
+
+PROMPTCHAN_API_KEY=your_promptchan_api_key
+PROMPTCHAN_API_URL=https://promptchan-api-endpoint-from-official-docs
+PROMPTCHAN_MODEL=optional_model_name
+PROMPTCHAN_WIDTH=768
+PROMPTCHAN_HEIGHT=1024
+PROMPTCHAN_STEPS=30
 ```
 
 ## Vercel環境変数
 
 - `FAL_KEY`
 - `FAL_EDIT_MODEL` 任意
+- `PROMPTCHAN_API_KEY`
+- `PROMPTCHAN_API_URL`
+- `PROMPTCHAN_MODEL` 任意
+- `PROMPTCHAN_WIDTH` 任意
+- `PROMPTCHAN_HEIGHT` 任意
+- `PROMPTCHAN_STEPS` 任意
 
 ## 注意
 
-このMVPはAPI側で「顔・髪・表情・本人性を維持する」指示を自動付与します。ただし生成AIの性質上、顔の完全一致は保証されません。必要に応じて、顔検出・マスク・参照画像固定・出力チェックを追加してください。
+fal.aiエディターはAPI側で「顔・髪・表情・本人性を維持する」指示を自動付与します。ただし生成AIの性質上、顔の完全一致は保証されません。
+
+Promptchan API Labは成人向け生成に対応する可能性があるAPIの検証枠です。未成年に見える人物、実在人物の性的生成、同意のない人物生成は禁止してください。Promptchan公式ドキュメントの最新仕様に合わせて、`PROMPTCHAN_API_URL` とpayloadを必要に応じて調整してください。
