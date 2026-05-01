@@ -2,8 +2,10 @@ import { fal } from "@fal-ai/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
+export const maxDuration = 60;
 
 const DEFAULT_MODEL = "fal-ai/nano-banana/edit";
+const REQUEST_TIMEOUT_MS = 55_000;
 
 function getErrorMessage(error: unknown) {
   if (error instanceof Error) return error.message;
@@ -25,6 +27,15 @@ function normalizeImageUrl(output: unknown): string | null {
     (Array.isArray(data.output) ? data.output[0] : data.output) ??
     null
   );
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => {
+      setTimeout(() => reject(new Error("fal.aiの処理が長すぎるためタイムアウトしました。画像サイズを小さくするか、もう一度試してください。")), ms);
+    }),
+  ]);
 }
 
 export async function POST(req: NextRequest) {
@@ -57,7 +68,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const uploadedUrl = await fal.storage.upload(image);
+    if (image.size > 8 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: "画像サイズが大きすぎます。8MB以下の画像で試してください。" },
+        { status: 400 }
+      );
+    }
+
+    const uploadedUrl = await withTimeout(fal.storage.upload(image), 20_000);
 
     const faceLockPrompt = [
       "Preserve the person's facial identity, face shape, eyes, nose, mouth, skin tone, hairstyle, expression, and pose as much as possible.",
@@ -73,14 +91,26 @@ export async function POST(req: NextRequest) {
           : "Edit only the background. Keep the person, face, hair, outfit, and body pose consistent.";
 
     const prompt = `${faceLockPrompt} ${modeInstruction} User edit request: ${userPrompt}`;
+    const model = process.env.FAL_EDIT_MODEL ?? DEFAULT_MODEL;
 
-    const result = await fal.subscribe(process.env.FAL_EDIT_MODEL ?? DEFAULT_MODEL, {
-      input: {
-        prompt,
-        image_urls: [uploadedUrl],
-      },
-      logs: false,
-    });
+    const result = await withTimeout(
+      fal.subscribe(model, {
+        input: {
+          prompt,
+          image_urls: [uploadedUrl],
+          num_images: 1,
+          aspect_ratio: "auto",
+          output_format: "png",
+          safety_tolerance: "4",
+          limit_generations: true,
+        },
+        logs: true,
+        onQueueUpdate: (update) => {
+          console.log("[fal queue]", update.status);
+        },
+      }),
+      REQUEST_TIMEOUT_MS
+    );
 
     const imageUrl = normalizeImageUrl(result.data);
 
@@ -97,7 +127,8 @@ export async function POST(req: NextRequest) {
       imageUrl,
       mode,
       prompt,
-      model: process.env.FAL_EDIT_MODEL ?? DEFAULT_MODEL,
+      model,
+      requestId: result.requestId,
     });
   } catch (error) {
     console.error("[edit]", error);
