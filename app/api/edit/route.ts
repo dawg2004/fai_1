@@ -78,17 +78,22 @@ export async function POST(req: NextRequest) {
     const uploadedUrl = await withTimeout(fal.storage.upload(image), 20_000);
 
     const faceLockPrompt = [
-      "Preserve the person's facial identity, face shape, eyes, nose, mouth, skin tone, hairstyle, expression, and pose as much as possible.",
-      "Do not change the person's face. Do not beautify into a different person. Keep the same person.",
-      "Keep the result realistic, clean, high quality, and suitable for a professional profile or nightlife promotional photo.",
+      "This is an image editing task, not a new-person generation task.",
+      "Preserve exactly the same person.",
+      "Keep the same face, identity, facial proportions, face shape, eye shape, eyebrows, nose, lips, mouth, ears, skin texture, skin tone, hairstyle, hairline, and head shape.",
+      "Keep the same expression, mouth position, gaze direction, camera angle, and body pose.",
+      "Do not modify the face area.",
+      "Do not turn this person into a different person.",
+      "Generate a realistic photographic edit, not a reimagined portrait.",
+      "If the user request conflicts with identity preservation, prioritize identity preservation.",
     ].join(" ");
 
     const modeInstruction =
       mode === "outfit"
-        ? "Edit only the outfit/clothing. Keep the face, hair, body pose, background composition, and identity consistent."
+        ? "Edit only the outfit/clothing below the neck. Do not modify the face, hair, expression, mouth, gaze, pose, or identity."
         : mode === "both"
-          ? "Edit the background and outfit while preserving the face and identity."
-          : "Edit only the background. Keep the person, face, hair, outfit, and body pose consistent.";
+          ? "Edit the outfit and background, but do not modify the face, hair, expression, mouth, gaze, pose, or identity."
+          : "Edit only the background. Keep the person, face, hair, outfit, expression, mouth, gaze, pose, and identity unchanged.";
 
     const prompt = `${faceLockPrompt} ${modeInstruction} User edit request: ${userPrompt}`;
     const model = process.env.FAL_EDIT_MODEL ?? DEFAULT_MODEL;
