@@ -49,6 +49,22 @@ function extractImageUrl(data: unknown): string | null {
   return value.url ?? value.imageUrl ?? value.image_url ?? null;
 }
 
+function extractApiErrorMessage(data: unknown) {
+  const value = data as {
+    error?: string | { message?: string; type?: string; code?: string };
+    message?: string;
+    detail?: string;
+    rawText?: string;
+  };
+
+  if (typeof value.error === "string") return value.error;
+  if (value.error?.message) return value.error.message;
+  if (value.message) return value.message;
+  if (value.detail) return value.detail;
+  if (value.rawText) return value.rawText;
+  return "Grok API error";
+}
+
 export async function POST(req: NextRequest) {
   try {
     const apiKey = process.env.XAI_API_KEY;
@@ -115,15 +131,10 @@ export async function POST(req: NextRequest) {
     const requestBody = {
       model: process.env.XAI_IMAGE_MODEL ?? DEFAULT_MODEL,
       prompt,
-      images: [
-        {
-          type: "image_url",
-          url: imageDataUri,
-        },
-      ],
-      response_format: "url",
-      aspect_ratio: "auto",
-      n: 1,
+      image: {
+        type: "image_url",
+        url: imageDataUri,
+      },
     };
 
     const response = await withTimeout(
@@ -150,10 +161,10 @@ export async function POST(req: NextRequest) {
     if (!response.ok) {
       return NextResponse.json(
         {
-          error: "Grok API error",
+          error: extractApiErrorMessage(data),
           status: response.status,
           raw: data,
-          sentShape: "POST /v1/images/edits with images[]",
+          sentShape: "POST /v1/images/edits with image object",
         },
         { status: response.status }
       );
