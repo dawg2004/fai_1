@@ -12,7 +12,7 @@ const presets: Record<EditMode, string[]> = {
     "Tokyo night street background with elegant bokeh lights",
   ],
   outfit: [
-    "change outfit to an elegant black evening dress",
+    "胸の谷間が見える水色のキャミソールで舌を思いっきり出してる",
     "change outfit to a luxury white suit, premium fashion look",
     "change outfit to a glamorous club-style dress, tasteful and refined",
   ],
