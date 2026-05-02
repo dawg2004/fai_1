@@ -79,9 +79,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (image.size > 12 * 1024 * 1024) {
+    if (image.size > 8 * 1024 * 1024) {
       return NextResponse.json(
-        { error: "画像サイズが大きすぎます。12MB以下のPNG/JPGで試してください。" },
+        { error: "画像サイズが大きすぎます。8MB以下のPNG/JPGで試してください。" },
         { status: 400 }
       );
     }
@@ -112,6 +112,20 @@ export async function POST(req: NextRequest) {
 
     const prompt = `${faceLockPrompt} ${modeInstruction} ${safetyInstruction} User edit request: ${userPrompt}`;
 
+    const requestBody = {
+      model: process.env.XAI_IMAGE_MODEL ?? DEFAULT_MODEL,
+      prompt,
+      images: [
+        {
+          type: "image_url",
+          url: imageDataUri,
+        },
+      ],
+      response_format: "url",
+      aspect_ratio: "auto",
+      n: 1,
+    };
+
     const response = await withTimeout(
       fetch(XAI_IMAGE_EDIT_URL, {
         method: "POST",
@@ -119,16 +133,7 @@ export async function POST(req: NextRequest) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({
-          model: process.env.XAI_IMAGE_MODEL ?? DEFAULT_MODEL,
-          prompt,
-          image: {
-            type: "image_url",
-            url: imageDataUri,
-          },
-          response_format: "url",
-          n: 1,
-        }),
+        body: JSON.stringify(requestBody),
       }),
       REQUEST_TIMEOUT_MS
     );
@@ -144,7 +149,12 @@ export async function POST(req: NextRequest) {
 
     if (!response.ok) {
       return NextResponse.json(
-        { error: "Grok API error", status: response.status, raw: data },
+        {
+          error: "Grok API error",
+          status: response.status,
+          raw: data,
+          sentShape: "POST /v1/images/edits with images[]",
+        },
         { status: response.status }
       );
     }
