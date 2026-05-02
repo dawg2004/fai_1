@@ -112,16 +112,22 @@ export async function POST(req: NextRequest) {
     const imageDataUri = await fileToDataUri(image);
 
     const faceLockPrompt = [
-      "Preserve the exact same person's facial identity, face shape, eyes, nose, mouth, skin tone, hairstyle, expression, and pose as much as possible.",
-      "Do not change the face. Do not create a different person. Keep the same person and realistic photographic quality.",
+      "This is an image editing task, not a new-person generation task.",
+      "Preserve exactly the same person.",
+      "Keep the same face, identity, facial proportions, face shape, eye shape, eyebrows, nose, lips, mouth, ears, skin texture, skin tone, hairstyle, hairline, and head shape.",
+      "Keep the same expression, mouth position, gaze direction, camera angle, and body pose.",
+      "Do not modify the face area.",
+      "Do not turn this person into a different person.",
+      "Generate a realistic photographic edit, not a reimagined portrait.",
+      "If the user request conflicts with identity preservation, prioritize identity preservation.",
     ].join(" ");
 
     const modeInstruction =
       mode === "outfit"
-        ? "Edit only the outfit/clothing while keeping the face, hair, body pose, and identity consistent."
+        ? "Edit only the outfit/clothing below the neck. Do not modify the face, hair, expression, mouth, gaze, pose, or identity."
         : mode === "both"
-          ? "Edit the background and outfit while preserving the face and identity."
-          : "Edit only the background while keeping the person, face, hair, outfit, and body pose consistent.";
+          ? "Edit the outfit and background, but do not modify the face, hair, expression, mouth, gaze, pose, or identity."
+          : "Edit only the background. Keep the person, face, hair, outfit, expression, mouth, gaze, pose, and identity unchanged.";
 
     const safetyInstruction =
       "Do not depict minors or anyone who appears under 20 in sexualized styling. Keep the result tasteful, consent-respecting, and suitable for professional nightlife promotional use.";
