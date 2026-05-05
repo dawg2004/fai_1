@@ -1,9 +1,9 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useMemo, useState } from "react";
-import { Sparkles, Upload, Wand2 } from "lucide-react";
+import { Sparkles, Upload, Wand2, Video } from "lucide-react";
 
-type EditMode = "background" | "outfit" | "both";
+type EditMode = "background" | "outfit" | "pose" | "both";
 
 const presets: Record<EditMode, string[]> = {
   background: [
@@ -15,6 +15,11 @@ const presets: Record<EditMode, string[]> = {
     "胸元の開いた水色のキャミソールに変更。服装のみ変更。顔、髪、表情、口元、目線、輪郭、本人性は変更しない。",
     "change outfit to a luxury white suit, premium fashion look",
     "change outfit to a refined club-style dress, tasteful and professional",
+  ],
+  pose: [
+    "change body pose to a confident standing pose with one hand on the hip. Keep the face, identity, outfit, and background unchanged.",
+    "change body pose to a seated elegant pose. Keep the face, identity, outfit, and background unchanged.",
+    "change body pose to a natural walking pose. Keep the face, identity, outfit, and background unchanged.",
   ],
   both: [
     "change to an elegant black dress and luxury neon lounge background",
@@ -96,7 +101,7 @@ export default function GrokEditorPage() {
         </div>
         <h1>Grok APIで顔維持編集</h1>
         <p>
-          xAI公式のGrok Image APIを使って、顔の印象を維持したまま背景や服装を編集します。Dreaminaなどの外部透かし系サービスは使いません。
+          xAI公式のGrok Image APIを使って、顔の印象を維持したまま背景・服装・ポーズを編集します。生成結果からそのまま動画生成へ進めます。
         </p>
       </header>
 
@@ -115,6 +120,7 @@ export default function GrokEditorPage() {
             {([
               ["background", "背景"],
               ["outfit", "服装"],
+              ["pose", "ポーズ"],
               ["both", "両方"],
             ] as [EditMode, string][]).map(([value, label]) => (
               <button key={value} type="button" onClick={() => handleModeChange(value)} className={mode === value ? "active" : ""}>
@@ -129,7 +135,7 @@ export default function GrokEditorPage() {
               value={prompt}
               onChange={(event) => setPrompt(event.target.value)}
               rows={5}
-              placeholder="例: luxury neon lounge background, cinematic night lighting"
+              placeholder="例: change body pose to a confident standing pose"
             />
           </div>
 
@@ -166,6 +172,9 @@ export default function GrokEditorPage() {
                   <img src={resultUrl} alt="Edited result" className="result-img" />
                   <div className="result-actions">
                     <a href={resultUrl} target="_blank" rel="noreferrer" className="secondary-btn">結果画像を開く</a>
+                    <a href={`/video-generator?imageUrl=${encodeURIComponent(resultUrl)}`} className="primary-btn">
+                      <Video size={18} /> 動画生成へ
+                    </a>
                   </div>
                 </div>
               ) : (
@@ -179,7 +188,7 @@ export default function GrokEditorPage() {
           <div className="safety-box">
             <p>使用API:</p>
             <p>xAI公式 `/v1/images/edits`、モデル `grok-imagine-image` を利用します。</p>
-            <p>顔維持指示と安全指示をAPI側で自動付与します。</p>
+            <p>ポーズ変更は顔の一致度が下がる場合があるため、顔固定プロンプトを優先します。</p>
           </div>
         </section>
       </div>
