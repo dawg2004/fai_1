@@ -1,9 +1,9 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useMemo, useState } from "react";
-import { Sparkles, Upload, Wand2 } from "lucide-react";
+import { Sparkles, Upload, Wand2, Video } from "lucide-react";
 
-type EditMode = "background" | "outfit" | "both";
+type EditMode = "background" | "outfit" | "pose" | "both";
 
 const presets: Record<EditMode, string[]> = {
   background: [
@@ -15,6 +15,11 @@ const presets: Record<EditMode, string[]> = {
     "胸元の開いた水色のキャミソールに変更。服装のみ変更。顔、髪、表情、口元、目線、輪郭、本人性は変更しない。",
     "change outfit to a luxury white suit, premium fashion look",
     "change outfit to a glamorous club-style dress, tasteful and refined",
+  ],
+  pose: [
+    "change body pose to a confident standing pose with one hand on the hip. Keep the face, identity, outfit, and background unchanged.",
+    "change body pose to a seated elegant pose. Keep the face, identity, outfit, and background unchanged.",
+    "change body pose to a natural walking pose. Keep the face, identity, outfit, and background unchanged.",
   ],
   both: [
     "change to an elegant black dress and luxury neon lounge background",
@@ -93,9 +98,9 @@ export default function FalEditorPage() {
         <div className="badge">
           <Sparkles size={16} /> fal.ai Face-Keep Editor
         </div>
-        <h1>顔を維持したまま、背景や服装をかんたん編集</h1>
+        <h1>顔を維持したまま、背景・服装・ポーズを編集</h1>
         <p>
-          写真を1枚アップロードして、背景変更・服装変更・両方編集を選ぶだけ。内部で顔維持プロンプトを自動付与して、LUMIVEIL向けの上品なナイトレジャー宣材に寄せます。
+          写真を1枚アップロードして、背景変更・服装変更・ポーズ変更を選ぶだけ。生成結果からそのまま動画生成へ進めます。
         </p>
       </header>
 
@@ -114,6 +119,7 @@ export default function FalEditorPage() {
             {([
               ["background", "背景"],
               ["outfit", "服装"],
+              ["pose", "ポーズ"],
               ["both", "両方"],
             ] as [EditMode, string][]).map(([value, label]) => (
               <button key={value} type="button" onClick={() => handleModeChange(value)} className={mode === value ? "active" : ""}>
@@ -128,7 +134,7 @@ export default function FalEditorPage() {
               value={prompt}
               onChange={(event) => setPrompt(event.target.value)}
               rows={5}
-              placeholder="例: luxury neon lounge background, cinematic night lighting"
+              placeholder="例: change body pose to a confident standing pose"
             />
           </div>
 
@@ -176,6 +182,9 @@ export default function FalEditorPage() {
                         入力画像URLを確認
                       </a>
                     )}
+                    <a href={`/video-generator?imageUrl=${encodeURIComponent(resultUrl)}`} className="primary-btn">
+                      <Video size={18} /> 動画生成へ
+                    </a>
                   </div>
                 </div>
               ) : (
@@ -187,7 +196,7 @@ export default function FalEditorPage() {
           <div className="safety-box">
             <p>安全設計:</p>
             <p>顔・髪・表情・本人性を維持する指示をAPI側で自動付与します。</p>
-            <p>ナイトレジャー向けの上品な宣材表現を想定し、露骨な成人向け生成は初期対象外です。</p>
+            <p>ポーズ変更は顔の一致度が下がる場合があるため、顔固定プロンプトを優先します。</p>
           </div>
         </section>
       </div>
