@@ -209,6 +209,9 @@ function VideoGeneratorContent() {
             <div>
               <video src={videoUrl} className="result-video" controls playsInline />
               <div className="result-actions">
+                <a href={videoUrl} download="fai-video.mp4" className="primary-btn">
+                  動画をダウンロード
+                </a>
                 <a href={videoUrl} target="_blank" rel="noreferrer" className="secondary-btn">動画を開く</a>
               </div>
             </div>
