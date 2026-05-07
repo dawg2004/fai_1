@@ -66,8 +66,8 @@ a { color: inherit; text-decoration: none; }
 .hero h1 {
   margin: 0;
   letter-spacing: 0;
-  line-height: 1.02;
-  font-size: clamp(30px, 5vw, 52px);
+  line-height: 1.15;
+  font-size: clamp(18px, 2.8vw, 28px);
 }
 .hero p {
   color: var(--muted);
