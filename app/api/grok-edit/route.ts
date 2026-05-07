@@ -120,6 +120,7 @@ export async function POST(req: NextRequest) {
       "Do not turn this person into a different person.",
       "Generate a realistic photographic edit, not a reimagined portrait.",
       "If the user request conflicts with identity preservation, prioritize identity preservation.",
+      "Do not add watermarks, logos, text overlays, signatures, labels, or brand marks.",
     ].join(" ");
 
     const modeInstruction =

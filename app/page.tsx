@@ -1,4 +1,4 @@
-import { Sparkles, Wand2, ShieldAlert, Bot } from "lucide-react";
+import { Sparkles, Wand2, ShieldAlert, Bot, Video } from "lucide-react";
 
 const menuItems = [
   {
@@ -7,6 +7,13 @@ const menuItems = [
     description: "xAI公式Grok Image APIで、顔の印象を維持したまま背景・服装を編集します。Dreamina系は使いません。",
     icon: Bot,
     badge: "Grok",
+  },
+  {
+    href: "/video-generator",
+    title: "動画生成",
+    description: "編集済み画像またはアップロード画像から、fal.ai経由でGrok / SeedanceのImage-to-Videoを実行します。",
+    icon: Video,
+    badge: "Video",
   },
   {
     href: "/fal-editor",
@@ -31,8 +38,8 @@ export default function Home() {
         <div className="badge">
           <Sparkles size={16} /> FAI Creative API Console
         </div>
-        <h1>生成AIメニュー</h1>
-        <p>Grok公式API、fal.aiの顔維持編集、Promptchan API検証を別メニューで管理します。</p>
+        <h1>FAI Creative Console</h1>
+        <p>Grok編集、fal.ai編集、動画生成をすぐ開けるシンプルな制作メニューです。</p>
       </header>
 
       <div className="menu-grid">
@@ -57,7 +64,7 @@ export default function Home() {
       <section className="note">
         <p>環境変数:</p>
         <p>Grok/xAI: XAI_API_KEY / XAI_IMAGE_MODEL 任意</p>
-        <p>fal.ai: FAL_KEY</p>
+        <p>fal.ai: FAL_KEY または FAL_API_KEY</p>
         <p>Promptchan: PROMPTCHAN_API_KEY / PROMPTCHAN_API_URL / PROMPTCHAN_MODEL 任意</p>
       </section>
     </main>
