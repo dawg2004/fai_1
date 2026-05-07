@@ -19,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   radial-gradient(circle at 18% -8%, rgba(242, 221, 160, 0.20), transparent 34%),
                   radial-gradient(circle at 88% 12%, rgba(152, 206, 196, 0.12), transparent 28%),
                   linear-gradient(180deg, #14120e 0%, #070809 48%, #020304 100%) !important;
+                font-family: "Helvetica Neue", "Hiragino Sans", "Yu Gothic", Arial, sans-serif !important;
               }
               .app-shell {
                 padding-top: 28px !important;
@@ -45,7 +46,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               }
               .hero h1 {
                 color: #fff3cc !important;
+                font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Times New Roman", serif !important;
+                font-weight: 500 !important;
+                letter-spacing: 0.10em !important;
                 text-shadow: 0 0 28px rgba(242, 221, 160, 0.22) !important;
+              }
+              .menu-card h2,
+              .result-card h2 {
+                font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Times New Roman", serif !important;
+                font-weight: 500 !important;
+                letter-spacing: 0.05em !important;
+              }
+              .badge,
+              .small-pill,
+              .open-link,
+              .primary-btn,
+              .secondary-btn,
+              .segment button {
+                letter-spacing: 0.04em !important;
               }
               .menu-card,
               .glass-card {
