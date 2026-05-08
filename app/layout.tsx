@@ -11,28 +11,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ja">
       <body>
         <style
-          id="luxury-v2"
+          id="ui-v3"
           dangerouslySetInnerHTML={{
             __html: `
               body {
                 background:
-                  radial-gradient(circle at 18% -8%, rgba(242, 221, 160, 0.20), transparent 34%),
-                  radial-gradient(circle at 88% 12%, rgba(152, 206, 196, 0.12), transparent 28%),
-                  linear-gradient(180deg, #14120e 0%, #070809 48%, #020304 100%) !important;
+                  radial-gradient(circle at 16% -10%, rgba(215, 183, 106, 0.16), transparent 32%),
+                  linear-gradient(180deg, #121316 0%, #08090b 48%, #040506 100%) !important;
                 font-family: "Helvetica Neue", "Hiragino Sans", "Yu Gothic", Arial, sans-serif !important;
               }
               .app-shell {
                 padding-top: 28px !important;
               }
               .hero {
-                border-color: rgba(242, 221, 160, 0.42) !important;
+                border-color: rgba(242, 221, 160, 0.30) !important;
+                border-radius: 14px !important;
                 background:
-                  linear-gradient(135deg, rgba(242, 221, 160, 0.16), rgba(255, 255, 255, 0.045) 38%, rgba(0, 0, 0, 0.58)),
-                  rgba(6, 7, 8, 0.82) !important;
+                  linear-gradient(135deg, rgba(242, 221, 160, 0.11), rgba(255, 255, 255, 0.035) 38%, rgba(0, 0, 0, 0.36)),
+                  rgba(12, 13, 15, 0.88) !important;
                 box-shadow:
-                  0 28px 80px rgba(0, 0, 0, 0.58),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.16),
-                  inset 0 -1px 0 rgba(242, 221, 160, 0.10) !important;
+                  0 18px 54px rgba(0, 0, 0, 0.38),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
               }
               .hero:after {
                 content: "";
@@ -48,8 +47,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 color: #fff3cc !important;
                 font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Times New Roman", serif !important;
                 font-weight: 500 !important;
-                letter-spacing: 0.10em !important;
-                text-shadow: 0 0 28px rgba(242, 221, 160, 0.22) !important;
+                letter-spacing: 0.08em !important;
+                text-shadow: 0 0 20px rgba(242, 221, 160, 0.16) !important;
               }
               .menu-card h2,
               .result-card h2 {
@@ -65,17 +64,28 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               .segment button {
                 letter-spacing: 0.04em !important;
               }
+              .menu-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 14px !important;
+              }
               .menu-card,
               .glass-card {
                 position: relative;
-                border-color: rgba(242, 221, 160, 0.30) !important;
+                border-color: rgba(242, 221, 160, 0.20) !important;
+                border-radius: 12px !important;
                 background:
-                  linear-gradient(145deg, rgba(242, 221, 160, 0.105), rgba(255, 255, 255, 0.035)),
-                  rgba(5, 6, 7, 0.78) !important;
+                  linear-gradient(145deg, rgba(255, 255, 255, 0.060), rgba(255, 255, 255, 0.025)),
+                  rgba(14, 15, 17, 0.88) !important;
                 box-shadow:
-                  0 22px 64px rgba(0, 0, 0, 0.48),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+                  0 14px 38px rgba(0, 0, 0, 0.30),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
                 overflow: hidden;
+              }
+              .menu-card {
+                min-height: 176px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                padding: 18px !important;
               }
               .menu-card:before,
               .glass-card:before {
@@ -87,10 +97,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 opacity: 0.9;
                 pointer-events: none;
               }
+              .open-link {
+                margin-top: auto !important;
+                padding-top: 16px !important;
+              }
               .icon-box {
                 color: #ffe7a6 !important;
-                background: linear-gradient(145deg, rgba(242, 221, 160, 0.26), rgba(255, 255, 255, 0.06)) !important;
-                border-color: rgba(242, 221, 160, 0.36) !important;
+                background: linear-gradient(145deg, rgba(242, 221, 160, 0.20), rgba(255, 255, 255, 0.06)) !important;
+                border-color: rgba(242, 221, 160, 0.28) !important;
               }
               .primary-btn,
               .segment button.active {
@@ -108,6 +122,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               .safety-box,
               .note {
                 border-color: rgba(242, 221, 160, 0.26) !important;
+              }
+              @media (max-width: 760px) {
+                .menu-grid {
+                  grid-template-columns: 1fr !important;
+                }
               }
             `,
           }}
